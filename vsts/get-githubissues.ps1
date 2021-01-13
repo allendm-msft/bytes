@@ -1,5 +1,5 @@
 # set-executionpolicy -UnRestricted
-# "P@ssword1" | ConvertTo-SecureString -AsPlainText -Force | ConvertFrom-SecureString | Out-File ".\.mypwd"
+# "<yourPassword>" | ConvertTo-SecureString -AsPlainText -Force | ConvertFrom-SecureString | Out-File ".\.mypwd"
 
 $token='<pat token>'
 $b64token=[System.Convert]::ToBase64String([char[]]$token)

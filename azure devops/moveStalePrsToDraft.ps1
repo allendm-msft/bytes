@@ -11,8 +11,19 @@ param (
     [string]$RepositoryName,        # Name of the repository
 
     [Parameter(Mandatory=$true)]
-    [string]$PersonalAccessToken    # Personal access token for authentication
+    [string]$PersonalAccessToken,    # Personal access token for authentication
+
+    [Parameter()]
+    [switch]$Abandon,               # Optional parameter to abandon the pull request
+
+    [Parameter()]
+    [switch]$Draft                  # Optional parameter to move to draft
 )
+
+if ($Abandon -and $Draft) {
+    Write-Host "Both -Abandon and -Draft parameters cannot be entered together."
+    exit -1
+}
 
 $headers=@{
     'Authorization' = 'Basic ' + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$($PersonalAccessToken)"))
@@ -41,9 +52,18 @@ foreach ($pr in $pullRequests.value) {
     # Move pull requests older than 60 days to draft
     if ($daysSinceCreation.TotalDays -gt 60) {
         $uri = "$OrganizationUrl/$ProjectName/_apis/git/repositories/$repositoryId/pullrequests/$pullRequestId" + "?api-version=7.1"
-        $body = @{
-            isDraft = "true"
-        } | ConvertTo-Json
+
+        $body = @{}
+        if($Abandon) {
+            $body = @{
+                status = "abandoned"
+            } | ConvertTo-Json
+        }
+        else {
+            $body = @{
+                isDraft = "true"
+            } | ConvertTo-Json
+        }
 
         Invoke-RestMethod -Uri $uri -Headers $headers -Method Patch -Body $body
 

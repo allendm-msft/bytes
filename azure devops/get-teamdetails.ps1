@@ -1,7 +1,7 @@
 
 $personalAccessToken = "<pat token>"
-$tfsUrl= "https://mseng.visualstudio.com/VSOnline/_apis"
-$tfsUrl2= "https://mseng.visualstudio.com/_apis"
+$tfsUrl= "https://<your url>.visualstudio.com/<your project>/_apis"
+$tfsUrl2= "https://<your url>.visualstudio.com/_apis"
 $headers=@{
     Authorization = 'Basic ' + [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(":$($personalAccessToken)"))
 }
